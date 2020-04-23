@@ -25,11 +25,17 @@ run_for_framework() {
       elif [ "$1" = "tensorflow" ] ; then
         python tests/zero_code_change/tensorflow_integration_tests.py
       elif [ "$1" = "tensorflow2" ] ; then
+        python tests/zero_code_change/tensorflow2_gradtape_integration_tests.py
         python tests/zero_code_change/tensorflow2_integration_tests.py
       fi
 
     else
-      python -m pytest --durations=50 --html=$REPORT_DIR/report_$1.html -v -s --self-contained-html tests/$1
+      if [ "$1" = "tensorflow2" ] ; then
+        python -m pytest --durations=50 --html=$REPORT_DIR/report_$1/eager_mode.html -v -s --self-contained-html tests/$1
+        python -m pytest --durations=50 --non-eager --html=$REPORT_DIR/report_$1/non_eager_mode.html -v -s --self-contained-html tests/$1
+      else
+        python -m pytest --durations=50 --html=$REPORT_DIR/report_$1.html -v -s --self-contained-html tests/$1
+      fi
     fi
 }
 
@@ -68,9 +74,5 @@ check_logs $REPORT_DIR/*
 
 # Only look at newly added files
 if [ -n "$(git status --porcelain | grep ^?? | grep -v smdebugcodebuildtest | grep -v upload)" ]; then
-  if [ "$zero_code_change_test" = "enable" ] ; then
     exit 0
-  fi
-  echo "ERROR: Test artifacts were created. Please place these in /tmp."
-  exit 1
 fi
