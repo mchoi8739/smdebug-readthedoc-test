@@ -4,6 +4,7 @@
 
 - [Overview](#overview)
 - [Support](#support)
+- [Install](#install-sagemaker-debugger)
 - [How It Works](#how-it-works)
 - [Docs](#docs)
 - [Examples](#examples)
