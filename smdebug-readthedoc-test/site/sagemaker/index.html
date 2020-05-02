@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Sagemaker - SageMaker Debugger ReadtheDoc Test</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Sagemaker";
+    var mkdocs_page_input_path = "sagemaker.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> SageMaker Debugger ReadtheDoc Test</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">SageMaker Debugger ReadtheDoc Test</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Sagemaker</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="running-sagemaker-jobs-with-amazon-sagemaker-debugger">Running SageMaker jobs with Amazon SageMaker Debugger</h2>
+<h2 id="outline">Outline</h2>
+<ul>
+<li><a href="#configuring-sagemaker-debugger">Configuring SageMaker Debugger</a></li>
+<li><a href="#saving-data">Saving data</a><ul>
+<li><a href="#saving-built-in-collections-that-we-manage">Saving built-in collections that we manage</a></li>
+<li><a href="#saving-reductions-for-a-custom-collection">Saving reductions for a custom collection</a></li>
+<li><a href="#enabling-tensorboard-summaries">Enabling TensorBoard summaries</a></li>
+</ul>
+</li>
+<li><a href="#rules">Rules</a><ul>
+<li><a href="#built-in-rules">Built In Rules</a></li>
+<li><a href="#custom-rules">Custom Rules</a></li>
+</ul>
+</li>
+<li><a href="#interactive-exploration">Interactive Exploration</a></li>
+<li><a href="#sagemaker-studio">SageMaker Studio</a></li>
+<li><a href="#tensorboard-visualization">TensorBoard Visualization</a></li>
+<li><a href="#example-notebooks">Example Notebooks</a></li>
+</ul>
+<h2 id="configuring-sagemaker-debugger">Configuring SageMaker Debugger</h2>
+<p>Regardless of which of the two above ways you have enabled SageMaker Debugger, you can configure it using the SageMaker python SDK. There are two aspects to this configuration.
+- You can specify what tensors to be saved, when they should be saved and in what form they should be saved.
+- You can specify which Rule you want to monitor your training job with. This can be either a built in rule that SageMaker provides, or a custom rule that you can write yourself.</p>
+<h3 id="saving-data">Saving Data</h3>
+<p>SageMaker Debugger gives you a powerful and flexible API to save the tensors you choose at the frequencies you want. These configurations are made available in the SageMaker Python SDK through the <code>DebuggerHookConfig</code> class.</p>
+<h4 id="saving-built-in-collections-that-we-manage">Saving built-in collections that we manage</h4>
+<p>Learn more about these built in collections <a href="../api/">here</a>.</p>
+<pre><code class="python">from sagemaker.debugger import DebuggerHookConfig, CollectionConfig
+hook_config = DebuggerHookConfig(
+    s3_output_path='s3://smdebug-dev-demo-pdx/mnist',
+    hook_parameters={
+        &quot;save_interval&quot;: 100
+    },
+    collection_configs=[
+        CollectionConfig(&quot;weights&quot;),
+        CollectionConfig(&quot;gradients&quot;),
+        CollectionConfig(&quot;losses&quot;),
+        CollectionConfig(
+            name=&quot;biases&quot;,
+            parameters={
+                &quot;save_interval&quot;: 10,
+                &quot;end_step&quot;: 500
+            }
+        ),
+    ]
+)
+import sagemaker as sm
+sagemaker_estimator = sm.tensorflow.TensorFlow(
+    entry_point='src/mnist.py',
+    role=sm.get_execution_role(),
+    base_job_name='smdebug-demo-job',
+    train_instance_count=1,
+    train_instance_type=&quot;ml.m4.xlarge&quot;,
+    framework_version=&quot;1.15&quot;,
+    py_version=&quot;py3&quot;,
+    # smdebug-specific arguments below
+    debugger_hook_config=hook_config
+)
+sagemaker_estimator.fit()
+</code></pre>
+
+<h4 id="saving-reductions-for-a-custom-collection">Saving reductions for a custom collection</h4>
+<p>You can define your collection of tensors. You can also choose to save certain reductions of tensors only instead of saving the full tensor. You may choose to do this to reduce the amount of data saved. Please note that when you save reductions, unless you pass the flag <code>save_raw_tensor</code>, only these reductions will be available for analysis. The raw tensor will not be saved.</p>
+<pre><code class="python">from sagemaker.debugger import DebuggerHookConfig, CollectionConfig
+hook_config = DebuggerHookConfig(
+    s3_output_path='s3://smdebug-dev-demo-pdx/mnist',
+    collection_configs=[
+        CollectionConfig(
+            name=&quot;activations&quot;,
+            parameters={
+                &quot;include_regex&quot;: &quot;relu|tanh&quot;,
+                &quot;reductions&quot;: &quot;mean,variance,max,abs_mean,abs_variance,abs_max&quot;
+            })
+    ]
+)
+import sagemaker as sm
+sagemaker_estimator = sm.tensorflow.TensorFlow(
+    entry_point='src/mnist.py',
+    role=sm.get_execution_role(),
+    base_job_name='smdebug-demo-job',
+    train_instance_count=1,
+    train_instance_type=&quot;ml.m4.xlarge&quot;,
+    framework_version=&quot;1.15&quot;,
+    py_version=&quot;py3&quot;,
+    # smdebug-specific arguments below
+    debugger_hook_config=hook_config
+)
+sagemaker_estimator.fit()
+</code></pre>
+
+<h4 id="enabling-tensorboard-summaries">Enabling TensorBoard summaries</h4>
+<p>SageMaker Debugger can automatically generate tensorboard scalar summaries,
+distributions and histograms for tensors saved. This can be enabled by
+passing a <code>TensorBoardOutputConfig</code> object when creating an Estimator as follows.
+You can also choose to disable or enable histograms specifically for different collections.
+By default a collection has <code>save_histogram</code> flag set to True.
+Note that scalar summaries are added to TensorBoard for all <code>ScalarCollections</code> and any scalar saved through <code>hook.save_scalar</code>.
+Refer <a href="../api/">API</a> for more details on scalar collections and <code>save_scalar</code> method.</p>
+<p>The below example saves weights and gradients as full tensors, and also saves the gradients as histograms and distributions to visualize in TensorBoard.
+These will be saved to the location passed in <code>TensorBoardOutputConfig</code> object.</p>
+<pre><code class="python">from sagemaker.debugger import DebuggerHookConfig, CollectionConfig, TensorBoardOutputConfig
+hook_config = DebuggerHookConfig(
+    s3_output_path='s3://smdebug-dev-demo-pdx/mnist',
+    collection_configs=[
+        CollectionConfig(
+            name=&quot;weights&quot;,
+            parameters={&quot;save_histogram&quot;: False}),
+        CollectionConfig(name=&quot;gradients&quot;),
+    ]
+)
+
+tb_config = TensorBoardOutputConfig('s3://smdebug-dev-demo-pdx/mnist/tensorboard')
+
+import sagemaker as sm
+sagemaker_estimator = sm.tensorflow.TensorFlow(
+    entry_point='src/mnist.py',
+    role=sm.get_execution_role(),
+    base_job_name='smdebug-demo-job',
+    train_instance_count=1,
+    train_instance_type=&quot;ml.m4.xlarge&quot;,
+    framework_version=&quot;1.15&quot;,
+    py_version=&quot;py3&quot;,
+    # smdebug-specific arguments below
+    debugger_hook_config=hook_config,
+    tensorboard_output_config=tb_config
+)
+sagemaker_estimator.fit()
+</code></pre>
+
+<p>For more details, refer our <a href="../api/">API page</a>.</p>
+<h3 id="rules">Rules</h3>
+<p>Here are some examples on how to run Rules with your training jobs.</p>
+<p>Note that passing a <code>CollectionConfig</code> object to the Rule as <code>collections_to_save</code>
+is equivalent to passing it to the <code>DebuggerHookConfig</code> object as <code>collection_configs</code>.
+This is just a shortcut for your convenience.</p>
+<h4 id="built-in-rules">Built in Rules</h4>
+<p>The Built-in Rules, or SageMaker Rules, are described in detail on <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-built-in-rules.html">this page</a></p>
+<table>
+<thead>
+<tr>
+<th>Scope of Validity</th>
+<th>Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generic Deep Learning models (TensorFlow, Apache MXNet, and PyTorch)</td>
+<td><ul><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/dead-relu.html"><code>dead_relu</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/exploding-tensor.html"><code>exploding_tensor</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/poor-weight-initialization.html"><code>poor_weight_initialization</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/saturated-activation.html"><code>saturated_activation</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/vanishing-gradient.html"><code>vanishing_gradient</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/weight-update-ratio.html"><code>weight_update_ratio</code></a></li></ul></td>
+</tr>
+<tr>
+<td>Generic Deep learning models (TensorFlow, MXNet, and PyTorch) and the XGBoost algorithm</td>
+<td><ul><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/all-zero.html"><code>all_zero</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/class-imbalance.html"><code>class_imbalance</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/confusion.html"><code>confusion</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/loss-not-decreasing.html"><code>loss_not_decreasing</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/overfit.html"><code>overfit</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/overtraining.html"><code>overtraining</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/similar-across-runs.html"><code>similar_across_runs</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/tensor-variance.html"><code>tensor_variance</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/unchanged-tensor.html"><code>unchanged_tensor</code></a></li></ul></td>
+</tr>
+<tr>
+<td>Deep learning applications</td>
+<td><ul><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/checkinput-mages.html"><code>check_input_images</code></a></li><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/nlp-sequence-ratio.html"><code>nlp_sequence_ratio</code></a></li></ul></td>
+</tr>
+<tr>
+<td>XGBoost algorithm</td>
+<td><ul><li><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/tree-depth.html"><code>tree_depth</code></a></li></ul></td>
+</tr>
+</tbody>
+</table>
+<h4 id="running-built-in-sagemaker-rules">Running built-in SageMaker Rules</h4>
+<p>You can run a SageMaker built-in Rule as follows using the <code>Rule.sagemaker</code> method.
+The first argument to this method is the base configuration that is associated with the Rule.
+We configure them as much as possible.
+You can take a look at the ruleconfigs that we populate for all built-in rules <a href="https://github.com/awslabs/sagemaker-debugger-rulesconfig">here</a>.
+You can choose to customize these parameters using the other parameters.</p>
+<p>These rules are run on our pre-built Docker images which are listed <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-docker-images-rules.html">here</a>.
+You are not charged for the instances when running SageMaker built-in rules.</p>
+<p>A list of all our built-in rules are provided <a href="#built-in-rules">below</a>.</p>
+<pre><code class="python">from sagemaker.debugger import Rule, CollectionConfig, rule_configs
+
+exploding_tensor_rule = Rule.sagemaker(
+    base_config=rule_configs.exploding_tensor(),
+    rule_parameters={&quot;collection_names&quot;: &quot;weights,losses&quot;},
+    collections_to_save=[
+        CollectionConfig(&quot;weights&quot;),
+        CollectionConfig(&quot;losses&quot;)
+    ]
+)
+
+vanishing_gradient_rule = Rule.sagemaker(
+    base_config=rule_configs.vanishing_gradient()
+)
+
+import sagemaker as sm
+sagemaker_estimator = sm.tensorflow.TensorFlow(
+    entry_point='src/mnist.py',
+    role=sm.get_execution_role(),
+    base_job_name='smdebug-demo-job',
+    train_instance_count=1,
+    train_instance_type=&quot;ml.m4.xlarge&quot;,
+    framework_version=&quot;1.15&quot;,
+    py_version=&quot;py3&quot;,
+    # smdebug-specific arguments below
+    rules=[exploding_tensor_rule, vanishing_gradient_rule],
+)
+sagemaker_estimator.fit()
+</code></pre>
+
+<h4 id="custom-rules">Custom Rules</h4>
+<p>You can write your own rule custom made for your application and provide it, so SageMaker can monitor your training job using your rule. To do so, you need to understand the programming model that <code>smdebug</code> provides. Our page on <a href="../analysis/">Programming Model for Analysis</a> describes the APIs that we provide to help you write your own rule.
+Please refer to <a href="https://github.com/awslabs/amazon-sagemaker-examples/blob/master/sagemaker-debugger/tensorflow_keras_custom_rule/tf-keras-custom-rule.ipynb">this example notebook</a> for a demonstration of creating your custom rule and running it on SageMaker.</p>
+<h4 id="running-custom-rules">Running custom Rules</h4>
+<p>To run a custom rule, you have to provide a few additional parameters.
+Key parameters to note are a file which has the implementation of your Rule class <code>source</code>,
+ the name of the Rule class (<code>rule_to_invoke</code>), the type of instance to run the Rule job on (<code>instance_type</code>),
+ the size of the volume on that instance (<code>volume_size_in_gb</code>), and the docker image to use for running this job (<code>image_uri</code>).</p>
+<p>Please refer to the documentation <a href="https://github.com/aws/sagemaker-python-sdk/blob/391733efd433c5e26afb56102c76ab7472f94b3d/src/sagemaker/debugger.py#L190">here</a> for more details.</p>
+<p>We have pre-built Docker images that you can use to run your custom rules.
+These are listed <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-docker-images-rules.html">here</a>.
+You can also choose to build your own Docker image for custom rule evaluation.
+Please refer to the repository <a href="https://github.com/awslabs/sagemaker-debugger-rules-container">SageMaker Debugger Rules Container</a> for instructions on how to build such an image.</p>
+<pre><code class="python">from sagemaker.debugger import Rule, CollectionConfig
+
+custom_coll = CollectionConfig(
+    name=&quot;relu_activations&quot;,
+    parameters={
+        &quot;include_regex&quot;: &quot;relu&quot;,
+        &quot;save_interval&quot;: 500,
+        &quot;end_step&quot;: 5000
+    })
+improper_activation_rule = Rule.custom(
+    name='improper_activation_job',
+    image_uri='552407032007.dkr.ecr.ap-south-1.amazonaws.com/sagemaker-debugger-rule-evaluator:latest',
+    instance_type='ml.c4.xlarge',
+    volume_size_in_gb=400,
+    source='rules/custom_rules.py',
+    rule_to_invoke='ImproperActivation',
+    rule_parameters={&quot;collection_names&quot;: &quot;relu_activations&quot;},
+    collections_to_save=[custom_coll]
+)
+
+import sagemaker as sm
+sagemaker_estimator = sm.tensorflow.TensorFlow(
+    entry_point='src/mnist.py',
+    role=sm.get_execution_role(),
+    base_job_name='smdebug-demo-job',
+    train_instance_count=1,
+    train_instance_type=&quot;ml.m4.xlarge&quot;,
+    framework_version=&quot;1.15&quot;,
+    py_version=&quot;py3&quot;,
+    # smdebug-specific arguments below
+    rules=[improper_activation_rule],
+)
+sagemaker_estimator.fit()
+</code></pre>
+
+<p>For more details, refer our <a href="../analysis/">Analysis page</a>.</p>
+<h2 id="interactive-exploration">Interactive Exploration</h2>
+<p><code>smdebug</code> SDK also allows you perform interactive and real-time exploration of the data saved. You can choose to inspect the tensors saved, or visualize them through your custom plots.
+You can retrieve these tensors as numpy arrays allowing you to use your favorite analysis libraries right in a SageMaker notebook instance. We have couple of example notebooks demonstrating this.
+- <a href="https://github.com/awslabs/amazon-sagemaker-examples/blob/master/sagemaker-debugger/mxnet_realtime_analysis/mxnet-realtime-analysis.ipynb">Real-time anaysis in a notebook during training</a>
+- <a href="https://github.com/awslabs/amazon-sagemaker-examples/blob/master/sagemaker-debugger/mnist_tensor_analysis/mnist_tensor_analysis.ipynb">Interactive tensor analysis in a notebook</a></p>
+<h2 id="sagemaker-studio">SageMaker Studio</h2>
+<p>SageMaker Debugger is on by default for supported training jobs on the official SageMaker Framework containers (or AWS Deep Learning Containers) during SageMaker training jobs.
+In this default scenario, SageMaker Debugger takes the losses and metrics from your training job and publishes them to SageMaker Metrics, allowing you to track these metrics in SageMaker Studio.
+You can also see the status of Rules you have enabled for your training job right in the Studio. <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-visualization.html">Here</a> are screenshots of that experience.</p>
+<h2 id="tensorboard-visualization">TensorBoard Visualization</h2>
+<p>If you have enabled TensorBoard outputs for your training job through SageMaker Debugger, TensorBoard artifacts will automatically be generated for the tensors saved.
+You can then point your TensorBoard instance to that S3 location and review the visualizations for the tensors saved.</p>
+<h2 id="example-notebooks">Example Notebooks</h2>
+<p>We have a bunch of <a href="https://github.com/awslabs/amazon-sagemaker-examples/tree/master/sagemaker-debugger">example notebooks</a> here demonstrating different aspects of SageMaker Debugger.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

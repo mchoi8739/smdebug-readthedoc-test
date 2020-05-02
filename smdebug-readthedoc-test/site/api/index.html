@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Saving Tensors API - SageMaker Debugger ReadtheDoc Test</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Saving Tensors API";
+    var mkdocs_page_input_path = "api.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> SageMaker Debugger ReadtheDoc Test</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">SageMaker Debugger ReadtheDoc Test</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Saving Tensors API</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="saving-tensors-api">Saving Tensors API</h1>
+<ul>
+<li><a href="#glossary">Glossary</a></li>
+<li><a href="#hook">Hook</a></li>
+<li><a href="#creating-a-hook">Creating a Hook</a><ul>
+<li><a href="#hook-when-using-sagemaker-python-sdk">Hook when using SageMaker Python SDK</a></li>
+<li><a href="#configuring-hook-using-sagemaker-python-sdk">Configuring Hook using SageMaker Python SDK</a></li>
+<li><a href="#hook-from-python-constructor">Hook from Python constructor</a></li>
+</ul>
+</li>
+<li><a href="#common-hook-api">Common Hook API</a></li>
+<li><a href="#tensorflow-specific-hook-api">TensorFlow specific Hook API</a></li>
+<li><a href="#mxnet-specific-hook-api">MXNet specific Hook API</a></li>
+<li><a href="#pytorch-specific-hook-api">PyTorch specific Hook API</a></li>
+<li><a href="#modes">Modes</a></li>
+<li><a href="#collection">Collection</a></li>
+<li><a href="#saveconfig">SaveConfig</a></li>
+<li><a href="#reductionconfig">ReductionConfig</a></li>
+</ul>
+<h2 id="glossary">Glossary</h2>
+<p>The imports assume <code>import smdebug.{tensorflow,pytorch,mxnet,xgboost} as smd</code>.</p>
+<p><strong>Step</strong>: Step means one the work done by the training job for one batch (i.e. forward and backward pass). (An exception is with TensorFlow's Session interface, where a step also includes the initialization session run calls). SageMaker Debugger is designed in terms of steps. When to save data is specified using steps as well as the invocation of Rules is on a step-by-step basis.</p>
+<p><strong>Hook</strong>: The main class to pass as a callback object, or to create callback functions. It keeps track of collections and writes output files at each step. The current hook implementation does not support merging tensors from current job with tensors from previous job(s). Hence ensure that the 'out_dir' does not exist prior to instantiating the 'Hook' object.
+- <code>hook = smd.Hook(out_dir="/tmp/mnist_job")</code></p>
+<p><strong>Mode</strong>: One of "train", "eval", "predict", or "global". Helpful for segmenting data based on the phase
+you're in. Defaults to "global".
+- <code>train_mode = smd.modes.TRAIN</code></p>
+<p><strong>Collection</strong>: A group of tensors. Each collection contains its configuration for what tensors are part of it, and when to save them.
+- <code>collection = hook.get_collection("losses")</code></p>
+<p><strong>SaveConfig</strong>: A Python dict specifying how often to save losses and tensors.
+- <code>save_config = smd.SaveConfig(save_interval=10)</code></p>
+<p><strong>ReductionConfig</strong>: Allows you to save a reduction, such as 'mean' or 'l1 norm', instead of the full tensor. Reductions are simple floats.
+- <code>reduction_config = smd.ReductionConfig(reductions=['min', 'max', 'mean'], norms=['l1'])</code></p>
+<p><strong>Trial</strong>: The main interface to use when analyzing a completed training job. Access collections and tensors. See <a href="../analysis/">trials documentation</a>.
+- <code>trial = smd.create_trial(out_dir="/tmp/mnist_job")</code></p>
+<p><strong>Rule</strong>: A condition to monitor the saved data for. It can trigger an exception when the condition is met, for example a vanishing gradient. See <a href="../analysis/">rules documentation</a>.</p>
+<hr />
+<h2 id="hook">Hook</h2>
+<h3 id="creating-a-hook">Creating a Hook</h3>
+<p>Note that when using Zero Script Change supported containers in SageMaker, you generally do not need to create your hook object except for some advanced use cases where you need access to the hook.</p>
+<p><code>HookClass</code> or <code>hook_class</code> below will be <code>Hook</code> for PyTorch, MXNet, and XGBoost. It will be one of <code>KerasHook</code>, <code>SessionHook</code> or <code>EstimatorHook</code> for TensorFlow.</p>
+<p>The framework in <code>smd</code> import below refers to one of <code>tensorflow</code>, <code>mxnet</code>, <code>pytorch</code> or <code>xgboost</code>.</p>
+<h4 id="hook-when-using-sagemaker-python-sdk">Hook when using SageMaker Python SDK</h4>
+<p>If you create a SageMaker job and specify the hook configuration in the SageMaker Estimator API
+as described in <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/train-model.html">AWS Docs</a>,
+a JSON file containing the hook configuration will be automatically written to the training container. In such a case, you can create a hook from that configuration file by calling</p>
+<pre><code class="python">import smdebug.{framework} as smd
+hook = smd.{hook_class}.create_from_json_file()
+</code></pre>
+
+<p>with no arguments and then use the hook Python API in your script.</p>
+<h4 id="configuring-hook-using-sagemaker-python-sdk">Configuring Hook using SageMaker Python SDK</h4>
+<p>Parameters to the Hook are passed as below when using the SageMaker Python SDK.</p>
+<pre><code class="python">from sagemaker.debugger import DebuggerHookConfig
+hook_config = DebuggerHookConfig(
+    s3_output_path='s3://smdebug-dev-demo-pdx/mnist',
+    hook_parameters={
+        &quot;parameter&quot;: &quot;value&quot;
+    })
+</code></pre>
+
+<p>The parameters can be one of the following. The meaning of these parameters will be clear as you review the sections of documentation below. Note that all parameters below have to be strings. So for any parameter which accepts a list (such as save_steps, reductions, include_regex), the value needs to be given as strings separated by a comma between them.</p>
+<pre><code>dry_run
+save_all
+include_workers
+include_regex
+reductions
+save_raw_tensor
+save_interval
+save_steps
+start_step
+end_step
+train.save_interval
+train.save_steps
+train.start_step
+train.end_step
+eval.save_interval
+eval.save_steps
+eval.start_step
+eval.end_step
+predict.save_interval
+predict.save_steps
+predict.start_step
+predict.end_step
+global.save_interval
+global.save_steps
+global.start_step
+global.end_step
+</code></pre>
+
+<h4 id="hook-from-python-constructor">Hook from Python constructor</h4>
+<p>See the framework-specific pages for more details.</p>
+<p>HookClass below can be one of <code>KerasHook</code>, <code>SessionHook</code>, <code>EstimatorHook</code> for TensorFlow, or is just <code>Hook</code> for MXNet, Pytorch and XGBoost.</p>
+<pre><code class="python">hook = HookClass(
+    out_dir,
+    export_tensorboard = False,
+    tensorboard_dir = None,
+    dry_run = False,
+    reduction_config = None,
+    save_config = None,
+    include_regex = None,
+    include_collections = None,
+    save_all = False,
+    include_workers=&quot;one&quot;
+)
+</code></pre>
+
+<h5 id="arguments">Arguments</h5>
+<ul>
+<li><code>out_dir</code> (str): Path where to save tensors and metadata. This is a required argument. Please ensure that the 'out_dir' does not exist.</li>
+<li><code>export_tensorboard</code> (bool): Whether to export TensorBoard summaries (distributions and histograms for tensors saved, and scalar summaries for scalars saved). Defaults to <code>False</code>.  Note that when running on SageMaker this parameter will be ignored. You will need to use the TensorBoardOutputConfig section in API to enable TensorBoard summaries. Refer <a href="../sagemaker/">SageMaker page</a> for an example.</li>
+<li><code>tensorboard_dir</code> (str): Path where to save TensorBoard artifacts. If this is not passed and <code>export_tensorboard</code> is True, then TensorBoard artifacts are saved in <code>out_dir/tensorboard</code> . Note that when running on SageMaker this parameter will be ignored. You will need to use the TensorBoardOutputConfig section in API to enable TensorBoard summaries. Refer <a href="../sagemaker/">SageMaker page</a> for an example.</li>
+<li><code>dry_run</code> (bool): If true, don't write any files</li>
+<li><code>reduction_config</code>: (<a href="#reductionconfig">ReductionConfig</a> object)  Specifies the reductions to be applied as default for tensors saved. A collection can have its own <code>ReductionConfig</code> object which overrides this for the tensors which belong to that collection.</li>
+<li><code>save_config</code>: (<a href="#saveconfig">SaveConfig</a> object) Specifies when to save tensors.  A collection can have its own <code>SaveConfig</code> object which overrides this for the tensors which belong to that collection.</li>
+<li><code>include_regex</code> (list[str]): list of regex patterns which specify the tensors to save. Tensors whose names match these patterns will be saved</li>
+<li><code>include_collections</code> (list[str]): List of which collections to save specified by name</li>
+<li><code>save_all</code> (bool): Saves all tensors and collections. Increases the amount of disk space used, and can reduce the performance of the training job significantly, depending on the size of the model.</li>
+<li><code>include_workers</code> (str): Used for distributed training. It can take the values <code>one</code> or <code>all</code>. <code>one</code> means only the tensors from one chosen worker will be saved. This is the default behavior. <code>all</code> means tensors from all workers will be saved.</li>
+</ul>
+<h3 id="common-hook-api">Common Hook API</h3>
+<p>These methods are common for all hooks in any framework.</p>
+<p>Note that <code>smd</code> import below translates to <code>import smdebug.{framework} as smd</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Arguments</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>add_collection(collection)</code></td>
+<td><code>collection (smd.Collection)</code></td>
+<td>Takes a Collection object and adds it to the CollectionManager that the Hook holds. Note that you should only pass in a Collection object for the same framework as the hook</td>
+</tr>
+<tr>
+<td><code>get_collection(name)</code></td>
+<td><code>name (str)</code></td>
+<td>Returns collection identified by the given name</td>
+</tr>
+<tr>
+<td><code>get_collections()</code></td>
+<td>-</td>
+<td>Returns all collection objects held by the hook</td>
+</tr>
+<tr>
+<td><code>set_mode(mode)</code></td>
+<td>value of the enum <code>smd.modes</code></td>
+<td>Sets mode of the job, can be one of <code>smd.modes.TRAIN</code>, <code>smd.modes.EVAL</code>, <code>smd.modes.PREDICT</code> or <code>smd.modes.GLOBAL</code>. Refer <a href="#modes">Modes</a> for more on that.</td>
+</tr>
+<tr>
+<td><code>create_from_json_file(</code><br/><code>json_file_path=None)</code></td>
+<td><code>json_file_path (str)</code></td>
+<td>Takes the path of a file which holds the json configuration of the hook, and creates hook from that configuration. This is an optional parameter. <br/> If this is not passed it tries to get the file path from the value of the environment variable <code>SMDEBUG_CONFIG_FILE_PATH</code> and defaults to <code>/opt/ml/input/config/debughookconfig.json</code>. When training on SageMaker you do not have to specify any path because this is the default path that SageMaker writes the hook configuration to.</td>
+</tr>
+<tr>
+<td><code>close()</code></td>
+<td>-</td>
+<td>Closes all files that are currently open by the hook</td>
+</tr>
+<tr>
+<td><code>save_scalar(</code><br/><code>name,</code><br/><code>value,</code><br/><code>sm_metric=False)</code></td>
+<td><code>name (str)</code> <br/> <code>value (float)</code> <br/> <code>sm_metric (bool)</code></td>
+<td>Saves a scalar value by the given name. Passing <code>sm_metric=True</code> flag also makes this scalar available as a SageMaker Metric to show up in SageMaker Studio. Note that when <code>sm_metric</code> is False, this scalar always resides only in your AWS account, but setting it to True saves the scalar also on AWS servers. The default value of <code>sm_metric</code> for this method is False.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tensorflow-specific-hook-api">TensorFlow specific Hook API</h3>
+<p>Note that there are three types of Hooks in TensorFlow: SessionHook, EstimatorHook and KerasHook based on the TensorFlow interface being used for training. <a href="../tensorflow/">This page</a> shows examples of each of these.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Arguments</th>
+<th>Returns</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>wrap_optimizer(optimizer)</code></td>
+<td><code>optimizer</code> (tf.train.Optimizer or tf.keras.Optimizer)</td>
+<td>Returns the same optimizer object passed with a couple of identifying markers to help <code>smdebug</code>. This returned optimizer should be used for training.</td>
+<td>When not using Zero Script Change environments, calling this method on your optimizer is necessary for SageMaker Debugger to identify and save gradient tensors. Note that this method returns the same optimizer object passed and does not change your optimization logic. If the hook is of type <code>KerasHook</code>, you can pass in either an object of type <code>tf.train.Optimizer</code> or <code>tf.keras.Optimizer</code>. If the hook is of type <code>SessionHook</code> or <code>EstimatorHook</code>, the optimizer can only be of type <code>tf.train.Optimizer</code>.  This new</td>
+</tr>
+<tr>
+<td><code>add_to_collection(</code><br/>  <code>collection_name, variable)</code></td>
+<td><code>collection_name (str)</code> : name of the collection to add to. <br/> <code>variable</code> parameter to pass to the collection's <code>add</code> method.</td>
+<td><code>None</code></td>
+<td>Calls the <code>add</code> method of a collection object. See <a href="#collection">this section</a> for more.</td>
+</tr>
+</tbody>
+</table>
+<p>APIs specific to training scripts using TF 2.x GradientTape (<a href="../tensorflow/#TF 2.x GradientTape example">Example</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Arguments</th>
+<th>Returns</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>wrap_tape(tape)</code></td>
+<td><code>tape</code> (tensorflow.python.eager.backprop.GradientTape)</td>
+<td>Returns a tape object with three identifying markers to help <code>smdebug</code>. This returned tape should be used for training.</td>
+<td>When not using Zero Script Change environments, calling this method on your tape is necessary for SageMaker Debugger to identify and save gradient tensors. Note that this method returns the same tape object passed.</td>
+</tr>
+<tr>
+<td><code>record_tensor_value(</code><br/>  <code>tensor_name, tensor_value)</code></td>
+<td><code>tensor_name (str)</code> : name of the tensor to save. <br/> <code>tensor_value</code> EagerTensor to save.</td>
+<td><code>None</code></td>
+<td>Manually save metrics tensors while using TF 2.x GradientTape.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="mxnet-specific-hook-api">MXNet specific Hook API</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Arguments</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>register_block(block)</code></td>
+<td><code>block (mx.gluon.Block)</code></td>
+<td>Calling this method applies the hook to the Gluon block representing the model, so SageMaker Debugger gets called by MXNet and can save the tensors required.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pytorch-specific-hook-api">PyTorch specific Hook API</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Arguments</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>register_module(module)</code></td>
+<td><code>module (torch.nn.Module)</code></td>
+<td>Calling this method applies the hook to the Torch Module representing the model, so SageMaker Debugger gets called by PyTorch and can save the tensors required.</td>
+</tr>
+<tr>
+<td><code>register_loss(loss_module)</code></td>
+<td><code>loss_module (torch.nn.modules.loss._Loss)</code></td>
+<td>Calling this method applies the hook to the Torch Module representing the loss, so SageMaker Debugger can save losses</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="modes">Modes</h2>
+<p>Used to signify which part of training you're in, similar to Keras modes. <code>GLOBAL</code> mode is used as
+a default when no mode was set. Choose from</p>
+<pre><code class="python">smdebug.modes.TRAIN
+smdebug.modes.EVAL
+smdebug.modes.PREDICT
+smdebug.modes.GLOBAL
+</code></pre>
+
+<p>The modes enum is also available under the alias <code>smdebug.{framework}.modes</code>.</p>
+<hr />
+<h2 id="collection">Collection</h2>
+<p>The construct of a Collection groups tensors together. A Collection is identified by a string representing the name of the collection. It can be used to group tensors of a particular kind such as "losses", "weights", "biases", or "gradients". A Collection has its own list of tensors specified by include regex patterns, and other parameters determining how these tensors should be saved and when. Using collections enables you to save different types of tensors at different frequencies and in different forms. These collections are then also available during analysis so you can query a group of tensors at once.</p>
+<p>There are a number of built-in collections that SageMaker Debugger manages by default. This means that the library takes care of identifying what tensors should be saved as part of that collection. You can also define custom collections, to do which there are couple of different ways.</p>
+<p>You can specify which of these collections to save in the hook's <code>include_collections</code> parameter, or through the <code>collection_configs</code> parameter to the <code>DebuggerHookConfig</code> in the SageMaker Python SDK.</p>
+<h3 id="built-in-collections">Built in Collections</h3>
+<p>Below is a comprehensive list of the built-in collections that are managed by SageMaker Debugger. The Hook identifes the tensors that should be saved as part of that collection for that framework and saves them if they were requested.</p>
+<p>The names of these collections are all lower case strings.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Supported by frameworks/hooks</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>all</code></td>
+<td>all</td>
+<td>Matches all tensors</td>
+</tr>
+<tr>
+<td><code>default</code></td>
+<td>all</td>
+<td>It's a default collection created, which matches the regex patterns passed as <code>include_regex</code> to the Hook</td>
+</tr>
+<tr>
+<td><code>weights</code></td>
+<td>TensorFlow, PyTorch, MXNet</td>
+<td>Matches all weights of the model</td>
+</tr>
+<tr>
+<td><code>biases</code></td>
+<td>TensorFlow, PyTorch, MXNet</td>
+<td>Matches all biases of the model</td>
+</tr>
+<tr>
+<td><code>gradients</code></td>
+<td>TensorFlow, PyTorch, MXNet</td>
+<td>Matches all gradients of the model. In TensorFlow when not using Zero Script Change environments, must use <code>hook.wrap_optimizer()</code>.</td>
+</tr>
+<tr>
+<td><code>losses</code></td>
+<td>TensorFlow, PyTorch, MXNet</td>
+<td>Saves the loss for the model</td>
+</tr>
+<tr>
+<td><code>metrics</code></td>
+<td>TensorFlow's KerasHook, XGBoost</td>
+<td>For KerasHook, saves the metrics computed by Keras for the model. For XGBoost, the evaluation metrics computed by the algorithm.</td>
+</tr>
+<tr>
+<td><code>outputs</code></td>
+<td>TensorFlow's KerasHook</td>
+<td>Matches the outputs of the model</td>
+</tr>
+<tr>
+<td><code>sm_metrics</code></td>
+<td>TensorFlow</td>
+<td>You can add scalars that you want to show up in SageMaker Metrics to this collection. SageMaker Debugger will save these scalars both to the out_dir of the hook, as well as to SageMaker Metric. Note that the scalars passed here will be saved on AWS servers outside of your AWS account.</td>
+</tr>
+<tr>
+<td><code>optimizer_variables</code></td>
+<td>TensorFlow's KerasHook</td>
+<td>Matches all optimizer variables, currently only supported in Keras.</td>
+</tr>
+<tr>
+<td><code>hyperparameters</code></td>
+<td>XGBoost</td>
+<td><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/xgboost_hyperparameters.html">Booster paramameters</a></td>
+</tr>
+<tr>
+<td><code>predictions</code></td>
+<td>XGBoost</td>
+<td>Predictions on validation set (if provided)</td>
+</tr>
+<tr>
+<td><code>labels</code></td>
+<td>XGBoost</td>
+<td>Labels on validation set (if provided)</td>
+</tr>
+<tr>
+<td><code>feature_importance</code></td>
+<td>XGBoost</td>
+<td>Feature importance given by <a href="https://xgboost.readthedocs.io/en/latest/python/python_api.html#xgboost.Booster.get_score">get_score()</a></td>
+</tr>
+<tr>
+<td><code>full_shap</code></td>
+<td>XGBoost</td>
+<td>A matrix of (nsmaple, nfeatures + 1) with each record indicating the feature contributions (<a href="https://github.com/slundberg/shap">SHAP values</a>) for that prediction. Computed on training data with <a href="https://github.com/slundberg/shap">predict()</a></td>
+</tr>
+<tr>
+<td><code>average_shap</code></td>
+<td>XGBoost</td>
+<td>The sum of SHAP value magnitudes over all samples. Represents the impact each feature has on the model output.</td>
+</tr>
+<tr>
+<td><code>trees</code></td>
+<td>XGBoost</td>
+<td>Boosted tree model given by <a href="https://xgboost.readthedocs.io/en/latest/python/python_api.html#xgboost.Booster.trees_to_dataframe">trees_to_dataframe()</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="default-collections-saved">Default collections saved</h3>
+<p>The following collections are saved regardless of the hook configuration.</p>
+<table>
+<thead>
+<tr>
+<th>Framework</th>
+<th>Default collections saved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TensorFlow</code></td>
+<td>METRICS, LOSSES, SM_METRICS</td>
+</tr>
+<tr>
+<td><code>PyTorch</code></td>
+<td>LOSSES</td>
+</tr>
+<tr>
+<td><code>MXNet</code></td>
+<td>LOSSES</td>
+</tr>
+<tr>
+<td><code>XGBoost</code></td>
+<td>METRICS</td>
+</tr>
+</tbody>
+</table>
+<p>If for some reason, you want to disable the saving of these collections, you can do so by setting end_step to 0 in the collection's SaveConfig.
+ When using the SageMaker Python SDK this would look like
+ <code>python
+from sagemaker.debugger import DebuggerHookConfig, CollectionConfig
+hook_config = DebuggerHookConfig(
+    s3_output_path='s3://smdebug-dev-demo-pdx/mnist',
+    collection_configs=[
+        CollectionConfig(name="metrics", parameters={"end_step": 0})
+    ]
+)</code>
+ When configuring the Collection in your Python script, it would be as follows:
+ <code>python
+ hook.get_collection("metrics").save_config.end_step = 0</code></p>
+<h3 id="creating-or-retrieving-a-collection">Creating or retrieving a Collection</h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hook.get_collection(collection_name)</code></td>
+<td>Returns the collection with the given name. Creates the collection with default configuration if it doesn't already exist. A new collection created by default does not match any tensor and is configured to save histograms and distributions along with the tensor if tensorboard support is enabled, and uses the reduction configuration and save configuration passed to the hook.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="properties-of-a-collection">Properties of a Collection</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tensor_names</code></td>
+<td>Get or set list of tensor names as strings</td>
+</tr>
+<tr>
+<td><code>include_regex</code></td>
+<td>Get or set list of regexes to include. Tensors whose names match these regex patterns will be included in the collection</td>
+</tr>
+<tr>
+<td><code>reduction_config</code></td>
+<td>Get or set the ReductionConfig object to be used for tensors part of this collection</td>
+</tr>
+<tr>
+<td><code>save_config</code></td>
+<td>Get or set the SaveConfig object to be used for tensors part of this collection</td>
+</tr>
+<tr>
+<td><code>save_histogram</code></td>
+<td>Get or set the boolean flag which determines whether to write histograms to enable histograms and distributions in TensorBoard, for tensors part of this collection. Only applicable if TensorBoard support is enabled.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="methods-on-a-collection">Methods on a Collection</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>coll.include(regex)</code></td>
+<td>Takes a regex string or a list of regex strings to match tensors to include in the collection.</td>
+</tr>
+<tr>
+<td><code>coll.add(tensor)</code></td>
+<td><strong>(TensorFlow only)</strong> Takes an instance or list or set of tf.Tensor/tf.Variable/tf.MirroredVariable/tf.Operation to add to the collection.</td>
+</tr>
+<tr>
+<td><code>coll.add_keras_layer(layer, inputs=False, outputs=True)</code></td>
+<td><strong>(tf.keras only)</strong> Takes an instance of a tf.keras layer and logs input/output tensors for that module. By default, only outputs are saved.</td>
+</tr>
+<tr>
+<td><code>coll.add_module_tensors(module, inputs=False, outputs=True)</code></td>
+<td><strong>(PyTorch only)</strong> Takes an instance of a PyTorch module and logs input/output tensors for that module. By default, only outputs are saved.</td>
+</tr>
+<tr>
+<td><code>coll.add_block_tensors(block, inputs=False, outputs=True)</code></td>
+<td><strong>(MXNet only)</strong> Takes an instance of a Gluon block,and logs input/output tensors for that module. By default, only outputs are saved.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configuring-collection-using-sagemaker-python-sdk">Configuring Collection using SageMaker Python SDK</h3>
+<p>Parameters to configure Collection are passed as below when using the SageMaker Python SDK.</p>
+<pre><code class="python">from sagemaker.debugger import CollectionConfig
+coll_config = CollectionConfig(
+    name=&quot;weights&quot;,
+    parameters={ &quot;parameter&quot;: &quot;value&quot; })
+</code></pre>
+
+<p>The parameters can be one of the following. The meaning of these parameters will be clear as you review the sections of documentation below. Note that all parameters below have to be strings. So any parameter which accepts a list (such as save_steps, reductions, include_regex), needs to be given as strings separated by a comma between them.</p>
+<pre><code>include_regex
+save_histogram
+reductions
+save_raw_tensor
+save_interval
+save_steps
+start_step
+end_step
+train.save_interval
+train.save_steps
+train.start_step
+train.end_step
+eval.save_interval
+eval.save_steps
+eval.start_step
+eval.end_step
+predict.save_interval
+predict.save_steps
+predict.start_step
+predict.end_step
+global.save_interval
+global.save_steps
+global.start_step
+global.end_step
+</code></pre>
+
+<hr />
+<h2 id="saveconfig">SaveConfig</h2>
+<p>The SaveConfig class customizes the frequency of saving tensors.
+The hook takes a SaveConfig object which is applied as default to all tensors included.
+A collection can also have a SaveConfig object which is applied to the collection's tensors.
+You can also choose to have different configuration for when to save tensors based on the mode of the job.</p>
+<p>This class is available in the following namespaces <code>smdebug</code> and <code>smdebug.{framework}</code>.</p>
+<pre><code class="python">import smdebug as smd
+save_config = smd.SaveConfig(
+    mode_save_configs = None,
+    save_interval = 100,
+    start_step = 0,
+    end_step = None,
+    save_steps = None,
+)
+</code></pre>
+
+<h5 id="arguments_1">Arguments</h5>
+<ul>
+<li><code>mode_save_configs</code> (dict): Used for advanced cases; see details below.</li>
+<li><code>save_interval</code> (int): How often, in steps, to save tensors. Defaults to 500. A step is saved if <code>step % save_interval == 0</code></li>
+<li><code>start_step</code> (int): When to start saving tensors.</li>
+<li><code>end_step</code> (int): When to stop saving tensors, exclusive.</li>
+<li><code>save_steps</code> (list[int]): Specific steps to save tensors at. Union with save_interval.</li>
+</ul>
+<h5 id="examples">Examples</h5>
+<ul>
+<li><code>SaveConfig()</code> will save at steps 0, 500, ...</li>
+<li><code>SaveConfig(save_interval=1)</code> will save at steps 0, 1, ...</li>
+<li><code>SaveConfig(save_interval=100, end_step=200)</code> will save at steps 0, 100</li>
+<li><code>SaveConfig(save_interval=100, end_step=201)</code> will save at steps 0, 100, 200</li>
+<li><code>SaveConfig(save_interval=100, start_step=150)</code> will save at steps 200, 300, ...</li>
+<li><code>SaveConfig(save_steps=[3, 7])</code> will save at steps 0, 3, 7, 500, ...</li>
+</ul>
+<h5 id="specifying-different-configuration-based-on-mode">Specifying different configuration based on mode</h5>
+<p>There is also a more advanced use case, where you specify a different SaveConfig for each mode.
+It is best understood through an example:</p>
+<pre><code class="python">import smdebug as smd
+smd.SaveConfig(mode_save_configs={
+    smd.modes.TRAIN: smd.SaveConfigMode(save_interval=1),
+    smd.modes.EVAL: smd.SaveConfigMode(save_interval=2),
+    smd.modes.PREDICT: smd.SaveConfigMode(save_interval=3),
+    smd.modes.GLOBAL: smd.SaveConfigMode(save_interval=4)
+})
+</code></pre>
+
+<p>Essentially, create a dictionary mapping modes to SaveConfigMode objects. The SaveConfigMode objects
+take the same four parameters (save_interval, start_step, end_step, save_steps) as the main object.
+Any mode not specified will default to the default configuration. If a mode is provided but not all
+params are specified, we use the default values for non-specified parameters.</p>
+<h4 id="configuration-using-sagemaker-python-sdk">Configuration using SageMaker Python SDK</h4>
+<p>Refer <a href="#configuring-hook-using-sagemaker-python-sdk">Configuring Hook using SageMaker Python SDK</a> and <a href="#configuring-collection-using-sagemaker-python-sdk">Configuring Collection using SageMaker Python SDK</a></p>
+<hr />
+<h2 id="reductionconfig">ReductionConfig</h2>
+<p>ReductionConfig allows the saving of certain reductions of tensors instead
+of saving the full tensor. The motivation here is to reduce the amount of data
+saved, and increase the speed in cases where you don't need the full
+tensor. The reduction operations which are computed in the training process
+and then saved.</p>
+<p>During analysis, these are available as reductions of the original tensor.
+Please note that using reduction config means that you will not have
+the full tensor available during analysis, so this can restrict what you can do with the tensor saved. You can choose to also save the raw tensor along with the reductions if you so desire.</p>
+<p>The hook takes a ReductionConfig object which is applied as default to all tensors included.
+A collection can also have its own ReductionConfig object which is applied
+to the tensors belonging to that collection.</p>
+<pre><code class="python">import smdebug as smd
+reduction_config = smd.ReductionConfig(
+    reductions = None,
+    abs_reductions = None,
+    norms = None,
+    abs_norms = None,
+    save_raw_tensor = False,
+)
+</code></pre>
+
+<h5 id="arguments_2">Arguments</h5>
+<ul>
+<li><code>reductions</code> (list[str]): Takes names of reductions, choosing from "min", "max", "median", "mean", "std", "variance", "sum", "prod"</li>
+<li><code>abs_reductions</code> (list[str]): Same as reductions, except the reduction will be computed on the absolute value of the tensor</li>
+<li><code>norms</code> (list[str]): Takes names of norms to compute, choosing from "l1", "l2"</li>
+<li><code>abs_norms</code> (list[str]): Same as norms, except the norm will be computed on the absolute value of the tensor</li>
+<li><code>save_raw_tensor</code> (bool): Saves the tensor directly, in addition to other desired reductions</li>
+</ul>
+<p>For example,</p>
+<p><code>ReductionConfig(reductions=['std', 'variance'], abs_reductions=['mean'], norms=['l1'])</code></p>
+<p>will save the standard deviation and variance, the mean of the absolute value, and the l1 norm.</p>
+<h4 id="configuration-using-sagemaker-python-sdk_1">Configuration using SageMaker Python SDK</h4>
+<p>The reductions are passed as part of the "reductions" parameter to HookParameters or Collection Parameters.
+Refer <a href="#configuring-hook-using-sagemaker-python-sdk">Configuring Hook using SageMaker Python SDK</a> and <a href="#configuring-collection-using-sagemaker-python-sdk">Configuring Collection using SageMaker Python SDK</a> for more on that.</p>
+<p>The parameter "reductions" can take a comma separated string consisting of the following values:</p>
+<pre><code>min
+max
+median
+mean
+std
+variance
+sum
+prod
+l1
+l2
+abs_min
+abs_max
+abs_median
+abs_mean
+abs_std
+abs_variance
+abs_sum
+abs_prod
+abs_l1
+abs_l2
+</code></pre>
+
+<hr />
+<h2 id="frameworks">Frameworks</h2>
+<p>For details on what's supported for different framework, go here:
+* <a href="../tensorflow/">TensorFlow</a>
+* <a href="../pytorch/">PyTorch</a>
+* <a href="../mxnet/">MXNet</a>
+* <a href="../xgboost/">XGBoost</a></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
