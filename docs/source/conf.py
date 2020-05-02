@@ -64,13 +64,11 @@ html_theme = "sphinx_rtd_theme"
 html_static_path = ['_static']
 
 
-master_doc = 'index'
+master_doc = 'README'
 
-
-from recommonmark.parser import CommonMarkParser
 
 source_parsers = {
-   '.md': 'CommonMarkParser',
+   '.md': 'recommonmark.parser.CommonMarkParser',
 }
 
 source_suffix = ['.rst', '.md']
