@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="None">
+  
+  
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <title>SageMaker Debugger ReadtheDoc Test</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Home";
+    var mkdocs_page_input_path = "README.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="js/jquery-2.1.1.min.js" defer></script>
+  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="." class="icon icon-home"> SageMaker Debugger ReadtheDoc Test</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#table-of-contents">Table of Contents</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sagemaker-debugger-in-action">SageMaker Debugger in Action</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#install-sagemaker-debugger">Install SageMaker Debugger</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#debugger-usage-and-supported-frameworks">Debugger Usage and Supported Frameworks</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#zero-script-change">Zero Script Change</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#bring-your-own-training-container">Bring Your Own Training Container</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#support-for-distributed-training-and-known-limitations">Support for Distributed Training and Known Limitations</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#how-it-works">How It Works</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#using-sagemaker-debugger-with-zero-script-change-of-your-training-script">Using SageMaker Debugger with Zero Script Change of Your Training Script</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#using-sagemaker-debugger-on-bring-your-own-container">Using SageMaker Debugger on Bring Your Own Container</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#using-sagemaker-debugger-on-a-non-sagemaker-environment">Using SageMaker Debugger on a Non-SageMaker Environment</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#sagemaker-notebook-examples">SageMaker Notebook Examples</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#run-a-rule-with-zero-script-change">Run a Rule with Zero Script Change</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#run-debugger-in-your-own-container">Run Debugger in Your Own Container</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#run-debugger-locally">Run Debugger Locally</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#further-documentation">Further Documentation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#release-notes">Release Notes</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#latest-release-v072">Latest release v0.7.2</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#license">License</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href=".">SageMaker Debugger ReadtheDoc Test</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Home</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="amazon-sagemaker-debugger">Amazon SageMaker Debugger</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#sagemaker-debugger-in-action">SageMaker Debugger in action</a></li>
+<li><a href="#install-sagemaker-debugger">Install</a></li>
+<li><a href="#how-it-works">How It Works</a></li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#further-documentation">Further Documentation</a></li>
+<li><a href="#release-notes">Release Notes</a></li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/train-debugger.html">Amazon SageMaker Debugger</a> automates the debugging process of machine learning training jobs. From training jobs, Debugger allows you to
+run your own training script (Zero Script Change experience) using Debugger built-in features&mdash;<code>Hook</code> and <code>Rule</code>&mdash;to capture tensors,
+have flexibility to build customized Hooks and Rules for configuring tensors as you want,
+and make the tensors available for analysis by saving in an <a href="https://aws.amazon.com/s3/?nc=sn&amp;loc=0">Amazon S3</a> bucket,
+all through a flexible and powerful API.</p>
+<p>The <code>smdebug</code> library powers Debugger by calling the saved tensors from the S3 bucket during the training job.
+<code>smdebug</code> retrieves and filters the tensors generated from Debugger such as gradients, weights, and biases.</p>
+<p>Debugger helps you develop better, faster, and cheaper models by minimally modifying estimator, tracing the tensors, catching anomalies while training models, and iterative model pruning.</p>
+<p>Debugger supports TensorFlow, PyTorch, MXNet, and XGBoost frameworks.
+The following list is a summary of the main functionalities of Debugger:</p>
+<ul>
+<li>Zero Script Change experience on SageMaker when using <a href="#support">supported containers</a></li>
+<li>Full visibility into any tensor part of the training process</li>
+<li>Real-time training job monitoring through Rules</li>
+<li>Automated anomaly detection and state assertions through built-in and custom Rules on SageMaker</li>
+<li>Actions on your training jobs based on the status of Rules</li>
+<li>Interactive exploration of saved tensors</li>
+<li>Distributed training support</li>
+<li>TensorBoard support</li>
+</ul>
+<p>See <a href="#how-it-works">How it works</a> for more details.</p>
+<h2 id="sagemaker-debugger-in-action">SageMaker Debugger in Action</h2>
+<ul>
+<li>Through the model pruning process using Debugger and <code>smdebug</code>, you can iteratively identify the importance of weights and cut neurons below a threshold you define. This process allows you to train the model with significantly fewer neurons, which means a lighter, more efficient, faster, and cheaper model without compromising accuracy.
+<img alt="Debugger Iterative Model Pruning using ResNet" src="docs/resources/results_resnet.png?raw=true" />
+See <a href="https://github.com/awslabs/amazon-sagemaker-examples/blob/master/sagemaker-debugger/pytorch_iterative_model_pruning/iterative_model_pruning_resnet.ipynb">Using SageMaker Debugger and SageMaker Experiments for iterative model pruning</a> notebook for visualization and further information.</li>
+<li>Use Debugger with XGBoost in SageMaker Studio to save feature importance values and plot them in a notebook during training. <img alt="Debugger XGBoost Visualization Example" src="docs/resources/xgboost_feature_importance.png?raw=true" /></li>
+<li>Use Debugger with TensorFlow in SageMaker Studio to run built-in rules and visualize the loss. <img alt="Debugger TensorFlow Visualization Example" src="docs/resources/tensorflow_rules_loss.png?raw=true" /></li>
+</ul>
+<h2 id="install-sagemaker-debugger">Install SageMaker Debugger</h2>
+<p><code>smdebug</code> library runs on Python 3.x. Install <code>smdebug</code> through:</p>
+<pre><code>pip install smdebug
+</code></pre>
+
+<h3 id="debugger-usage-and-supported-frameworks">Debugger Usage and Supported Frameworks</h3>
+<p>There are two ways in which you can enable SageMaker Debugger while training on SageMaker&mdash;Zero Script Change and Bring Your Own Training Container (BYOC).</p>
+<h4 id="zero-script-change">Zero Script Change</h4>
+<p>You can use your own training script while using <a href="https://aws.amazon.com/machine-learning/containers/">AWS Deep Learning Containers (DLC)</a> in TensorFlow, PyTorch, MXNet, and XGBoost frameworks. The AWS DLCs enable you to use Debugger with no changes to your training script by automatically adding SageMaker Debugger's <code>Hook</code>.
+The following table shows currently supported versions of the four frameworks for Zero Script Change experience.</p>
+<table>
+<thead>
+<tr>
+<th>Framework</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="docs/tensorflow.md">TensorFlow</a></td>
+<td>1.15, 1.15.2, 2.1</td>
+</tr>
+<tr>
+<td><a href="docs/mxnet.md">MXNet</a></td>
+<td>1.6</td>
+</tr>
+<tr>
+<td><a href="docs/pytorch.md">PyTorch</a></td>
+<td>1.3, 1.4</td>
+</tr>
+<tr>
+<td><a href="docs/xgboost.md">XGBoost</a></td>
+<td>&gt;=0.90-2 <a href="xgboost/#use-xgboost-as-a-built-in-algorithm">As Built-in algorithm</a></td>
+</tr>
+</tbody>
+</table>
+<p>For the full list and information of the AWS DLCs, see <a href="https://docs.aws.amazon.com/deep-learning-containers/latest/devguide/deep-learning-containers-images.html#deep-learning-containers-images-table">Deep Learning Containers Images</a>.</p>
+<h4 id="bring-your-own-training-container">Bring Your Own Training Container</h4>
+<p><code>smdebug</code> supports frameworks other than the ones listed in the previous Zero Script Change section. You can use your own training script by adding a minimal modification.
+Currently supported versions of frameworks are listed in the following table.</p>
+<table>
+<thead>
+<tr>
+<th>Framework</th>
+<th>Versions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="docs/tensorflow.md">TensorFlow</a></td>
+<td>1.14. 1.15, 2.0.1, 2.1.0</td>
+</tr>
+<tr>
+<td>Keras (with TensorFlow backend)</td>
+<td>2.3</td>
+</tr>
+<tr>
+<td><a href="docs/mxnet.md">MXNet</a></td>
+<td>1.4, 1.5, 1.6</td>
+</tr>
+<tr>
+<td><a href="docs/pytorch.md">PyTorch</a></td>
+<td>1.2, 1.3, 1.4</td>
+</tr>
+<tr>
+<td><a href="docs/xgboost.md">XGBoost</a></td>
+<td><a href="xgboost/#use-xgboost-as-a-framework">As Framework</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="support-for-distributed-training-and-known-limitations">Support for Distributed Training and Known Limitations</h3>
+<table>
+    <thead>
+        <tr>
+           <th colspan=3>
+           Distributed Training
+           </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=2>Horovod</td>
+            <td>Supported</td>
+            <td>TF 1.15, PT 1.4, MX 1.6</td>
+        </tr>
+        <tr>
+            <td>Not supported</td>
+            <td>TF 2.x, PT 1.5</td>
+        </tr>
+        <tr>
+            <td>Parameter Server-based</td>
+            <td colspan=2>Not supported</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 id="how-it-works">How It Works</h2>
+<p>Amazon SageMaker Debugger uses the construct of a <code>Hook</code> to save the values of requested tensors throughout the training process. You can then setup a <code>Rule</code> job which simultaneously monitors and validates these tensors to ensure
+that training is progressing as expected.</p>
+<p>A <code>Rule</code> checks for vanishing gradients, exploding tensor values, or poor weight initialization. Rules are attached to Amazon CloudWatch events, so that when a rule is triggered it changes the state of the CloudWatch event.
+You can configure any action on the CloudWatch event, such as to stop the training job saving you time and money.</p>
+<p>Debugger can be used inside or outside of SageMaker. However the built-in rules that AWS provides are only available for SageMaker training. Scenarios of usage can be classified into the following three cases.</p>
+<h4 id="using-sagemaker-debugger-with-zero-script-change-of-your-training-script">Using SageMaker Debugger with Zero Script Change of Your Training Script</h4>
+<p>Here you specify which rules to use when setting up the estimator and run your existing script without no change. For an example of this, see <a href="#running-a-rule-with-zero-script-change-on-sageMaker">Running a Rule with Zero Script Change on SageMaker</a>.</p>
+<h4 id="using-sagemaker-debugger-on-bring-your-own-container">Using SageMaker Debugger on Bring Your Own Container</h4>
+<p>You can use Debugger with your training script on your own container making only a minimal modification to your training script to add Debugger's <code>Hook</code>.
+For an example template of code to use Debugger on your own container in TensorFlow 2.x frameworks, see <a href="#Running-on-Your-Own-Container">Running on Your Own Container</a>.
+See the following instruction pages to set up Debugger in your preferred framework.
+  - <a href="docs/tensorflow.md">TensorFlow</a>
+  - <a href="docs/mxnet.md">MXNet</a>
+  - <a href="docs/pytorch.md">PyTorch</a>
+  - <a href="docs/xgboost.md">XGBoost</a></p>
+<h4 id="using-sagemaker-debugger-on-a-non-sagemaker-environment">Using SageMaker Debugger on a Non-SageMaker Environment</h4>
+<p>Here you write custom rules (or manually analyze the tensors) and modify your training script minimally to enable Debugger on a non-SageMaker Environment such as your local machine. For an example of this, see <a href="#running-locally">Running Locally</a>.</p>
+<p>The reason for different setups is that Zero Script Change (via AWS Deep Learning Containers) uses custom framework forks of TensorFlow, PyTorch, MXNet, and XGBoost which add the <code>Hook</code> to the training job and save requested tensors automatically.
+These framework forks are not available in custom containers or non-SageMaker environments, so you must modify your training script in these environments.</p>
+<h2 id="examples">Examples</h2>
+<h3 id="sagemaker-notebook-examples">SageMaker Notebook Examples</h3>
+<p>To find a collection of demonstrations using Debugger, see <a href="https://github.com/awslabs/amazon-sagemaker-examples/tree/master/sagemaker-debugger">SageMaker Debugger Example Notebooks</a>.</p>
+<h4 id="run-a-rule-with-zero-script-change">Run a Rule with Zero Script Change</h4>
+<p>This example shows a how to use Debugger with Zero Script Change of
+your training script on a SageMaker DLC.</p>
+<pre><code class="python">import sagemaker as sm
+from sagemaker.debugger import rule_configs, Rule, CollectionConfig
+
+# Choose a built-in rule to monitor your training job
+rule = Rule.sagemaker(
+    rule_configs.exploding_tensor(),
+    # configure your rule if applicable
+    rule_parameters={&quot;tensor_regex&quot;: &quot;.*&quot;},
+    # specify collections to save for processing your rule
+    collections_to_save=[
+        CollectionConfig(name=&quot;weights&quot;),
+        CollectionConfig(name=&quot;losses&quot;),
+    ],
+)
+
+# Pass the rule to the estimator
+sagemaker_simple_estimator = sm.tensorflow.TensorFlow(
+    entry_point=&quot;script.py&quot;, #replace script.py to your own training script
+    role=sm.get_execution_role(),
+    framework_version=&quot;1.15&quot;,
+    py_version=&quot;py3&quot;,
+    # argument for smdebug below
+    rules=[rule],
+)
+
+sagemaker_simple_estimator.fit()
+tensors_path = sagemaker_simple_estimator.latest_job_debugger_artifacts_path()
+
+import smdebug.trials as smd
+trial = smd.create_trial(out_dir=tensors_path)
+print(f&quot;Saved these tensors: {trial.tensor_names()}&quot;)
+print(f&quot;Loss values during evaluation were {trial.tensor('CrossEntropyLoss:0').values(mode=smd.modes.EVAL)}&quot;)
+</code></pre>
+
+<p>That's it! When you configure the <code>sagemaker_simple_estimator</code>,
+you simply specify the <code>entry_point</code> to your training script python file.
+When you run the <code>sagemaker_simple_estimator.fit()</code> API,
+SageMaker will automatically monitor your training job for you with the Rules specified and create a <code>CloudWatch</code> event that tracks the status of the Rule,
+so you can take any action based on them.</p>
+<p>If you want additional configuration and control, see <a href="docs/sagemaker.md">Running SageMaker jobs with Debugger</a> for more information.</p>
+<h4 id="run-debugger-in-your-own-container">Run Debugger in Your Own Container</h4>
+<p>The following example shows how to set <code>hook</code> to set a training model using Debugger in your own container.
+This example is for containers in TensorFlow 2.x framework using GradientTape to configure the <code>hook</code>.</p>
+<pre><code class="python">import smdebug.tensorflow as smd
+hook = smd.KerasHook(out_dir=args.out_dir)
+
+model = tf.keras.models.Sequential([ ... ])
+    for epoch in range(n_epochs):
+        for data, labels in dataset:
+            dataset_labels = labels
+            # wrap the tape to capture tensors
+            with hook.wrap_tape(tf.GradientTape(persistent=True)) as tape:
+                logits = model(data, training=True)  # (32,10)
+                loss_value = cce(labels, logits)
+            grads = tape.gradient(loss_value, model.variables)
+            opt.apply_gradients(zip(grads, model.variables))
+            acc = train_acc_metric(dataset_labels, logits)
+            # manually save metric values
+            hook.record_tensor_value(tensor_name=&quot;accuracy&quot;, tensor_value=acc)
+</code></pre>
+
+<p>To see a full script of this, refer to the <a href="https://github.com/awslabs/sagemaker-debugger/blob/master/examples/tensorflow2/scripts/tf_keras_gradienttape.py">tf_keras_gradienttape.py</a> example script.
+For a notebook example of using BYOC in PyTorch, see <a href="https://github.com/awslabs/amazon-sagemaker-examples/blob/master/sagemaker-debugger/pytorch_custom_container/pytorch_byoc_smdebug.ipynb">Using Amazon SageMaker Debugger with Your Own PyTorch Container</a></p>
+<h4 id="run-debugger-locally">Run Debugger Locally</h4>
+<p>Requires Python 3.6+ and this example uses tf.keras.</p>
+<p>To use Debugger, simply add a callback <code>hook</code>:</p>
+<pre><code class="python">import smdebug.tensorflow as smd
+hook = smd.KerasHook(out_dir='~/smd_outputs/')
+
+model = tf.keras.models.Sequential([ ... ])
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+)
+
+# Add the hook as a callback
+model.fit(x_train, y_train, epochs=2, callbacks=[hook])
+model.evaluate(x_test, y_test, callbacks=[hook])
+
+# Create a trial to inspect the saved tensors
+trial = smd.create_trial(out_dir='~/smd_outputs/')
+print(f&quot;Saved these tensors: {trial.tensor_names()}&quot;)
+print(f&quot;Loss values during evaluation were {trial.tensor('CrossEntropyLoss:0').values(mode=smd.modes.EVAL)}&quot;)
+</code></pre>
+
+<h2 id="further-documentation">Further Documentation</h2>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="docs/sagemaker.md">SageMaker Training</a></td>
+<td>SageMaker users, we recommend you start with this page on how to run SageMaker training jobs with SageMaker Debugger</td>
+</tr>
+<tr>
+<td>Frameworks <ul><li><a href="docs/tensorflow.md">TensorFlow</a></li><li><a href="docs/pytorch.md">PyTorch</a></li><li><a href="docs/mxnet.md">MXNet</a></li><li><a href="docs/xgboost.md">XGBoost</a></li></ul></td>
+<td>See the frameworks pages for details on what's supported and how to modify your training script if applicable</td>
+</tr>
+<tr>
+<td><a href="docs/api.md">APIs for Saving Tensors</a></td>
+<td>Full description of the APIs for saving tensors</td>
+</tr>
+<tr>
+<td><a href="docs/analysis.md">Programming Model for Analysis</a></td>
+<td>For description of the programming model provided by the APIs that enable you to perform interactive exploration of tensors saved as well as to write your own Rules monitoring your training jobs.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="release-notes">Release Notes</h2>
+<h3 id="latest-release-v072"><a href="https://github.com/awslabs/sagemaker-debugger/releases">Latest release v0.7.2</a></h3>
+<ul>
+<li>
+<p>Introducing experimental support for TF 2.x training scripts using GradientTape -
+   With this update, weights, bias, loss, metrics, and gradients are captured by SageMaker Debugger.
+   GradientTape in TF 2.x captures these tensors from custom training jobs. An example of GradientTape implementation to a custom ResNet training script using TensorFlow's Keras interface is provided at <a href="https://github.com/awslabs/sagemaker-debugger/blob/master/examples/tensorflow2/scripts/tf_keras_gradienttape.py">tf_keras_gradienttape.py</a>.
+   GradientTape does not work with Zero Script Change experience at this time.</p>
+<pre><code>*Note*: Training scripts using GradientTape for higher-order gradients or multiple tapes are not supported. Distributed training scripts that use GradientTape are not supported at this time.
+</code></pre>
+</li>
+<li>
+<p>Support <code>SyncOnReadVariable</code> in mirrored strategy - Fixes a bug that occurred because the <code>SyncOnRead</code> distributed variable was not supported with <code>smdebug</code>. Also enables the use of <code>smdebug</code> with training scripts using TF 2.x MirroredStrategy with the <code>fit()</code> API.</p>
+</li>
+<li>
+<p>Turn off hook and write only from one worker for unsupported distributed training techniques – Fixes a crash when distributed training in PyTorch framework is implemented using generic multiprocessing library, which is not a method supported by <code>smdebug</code>. This fix handles this case and ensures that tensors are saved.</p>
+</li>
+<li>
+<p>Bug fix: Pytorch: Register only if tensors require gradients – Users were observing a crash when training with pre-trained embeddings which does not need gradient updates. This fix checks if a gradient update is required and registers a backward hook only in those cases.</p>
+</li>
+</ul>
+<h2 id="license">License</h2>
+<p>This library is licensed under the Apache 2.0 License.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.1
+Build Date UTC : 2020-05-02 03:09:51
+-->

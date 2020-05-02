@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Tensorflow - SageMaker Debugger ReadtheDoc Test</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Tensorflow";
+    var mkdocs_page_input_path = "tensorflow.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> SageMaker Debugger ReadtheDoc Test</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">SageMaker Debugger ReadtheDoc Test</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Tensorflow</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="tensorflow">Tensorflow</h1>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#support">Support</a></li>
+<li><a href="#how-to-use">How to Use</a></li>
+<li><a href="#tfkeras">tf.keras Example</a></li>
+<li><a href="#monitoredsession">MonitoredSession Example</a></li>
+<li><a href="#estimator">Estimator Example</a></li>
+<li><a href="#full-api">Full API</a></li>
+</ul>
+<hr />
+<h2 id="support">Support</h2>
+<h3 id="versions">Versions</h3>
+<ul>
+<li>
+<p>Zero Script Change experience where you need no modifications to your training script is supported in the official <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/pre-built-containers-frameworks-deep-learning.html">SageMaker Framework Container for TensorFlow 1.15</a>, or the <a href="https://aws.amazon.com/machine-learning/containers/">AWS Deep Learning Container for TensorFlow 1.15</a>.</p>
+</li>
+<li>
+<p>This library itself supports the following versions when you use our API which requires a few minimal changes to your training script: TensorFlow 1.14, 1.15, 2.0.1, 2.1.0. Keras 2.3.</p>
+</li>
+</ul>
+<h3 id="interfaces">Interfaces</h3>
+<ul>
+<li><a href="https://www.tensorflow.org/versions/r1.15/api_docs/python/tf/estimator">Estimator</a></li>
+<li><a href="https://www.tensorflow.org/versions/r1.15/api_docs/python/tf/keras">tf.keras</a></li>
+<li><a href="https://www.tensorflow.org/versions/r1.15/api_docs/python/tf/train/MonitoredSession?hl=en">MonitoredSession</a></li>
+</ul>
+<h3 id="distributed-training">Distributed training</h3>
+<ul>
+<li><a href="https://www.tensorflow.org/versions/r1.15/api_docs/python/tf/distribute/MirroredStrategy">MirroredStrategy</a> or <a href="https://www.tensorflow.org/versions/r1.15/api_docs/python/tf/contrib/distribute/MirroredStrategy">Contrib MirroredStrategy</a></li>
+</ul>
+<p>We will very quickly follow up with support for Horovod and Parameter Server based training.</p>
+<hr />
+<h2 id="how-to-use">How to Use</h2>
+<h3 id="using-zero-script-change-containers">Using Zero Script Change containers</h3>
+<p>In this case, you don't need to do anything to get the hook running. You are encouraged to configure the hook from the SageMaker python SDK so you can run different jobs with different configurations without having to modify your script. If you want access to the hook to configure certain things which can not be configured through the SageMaker SDK, you can retrieve the hook as follows.</p>
+<pre><code>import smdebug.tensorflow as smd
+hook = smd.{hook_class}.create_from_json_file()
+</code></pre>
+
+<p>Note that you can create the hook from smdebug's python API as is being done in the next section even in such containers.</p>
+<h3 id="bring-your-own-container-experience">Bring your own container experience</h3>
+<h4 id="1-create-a-hook">1. Create a hook</h4>
+<p>If using SageMaker, you will configure the hook in SageMaker's python SDK using the Estimator class. Instantiate it with
+<code>smd.{hook_class}.create_from_json_file()</code>. Otherwise, call the hook class constructor, <code>smd.{hook_class}()</code>. Details are below for tf.keras, MonitoredSession, or Estimator.</p>
+<h4 id="2-register-the-hook-to-your-model">2. Register the hook to your model</h4>
+<p>The argument is <code>callbacks=[hook]</code> for tf.keras. It is <code>hooks=[hook]</code> for MonitoredSession and Estimator.</p>
+<h4 id="3-wrap-the-optimizer">3. Wrap the optimizer</h4>
+<p>If you would like to save <code>gradients</code>, wrap your optimizer with the hook as follows <code>optimizer = hook.wrap_optimizer(optimizer)</code>. This does not modify your optimization logic, and returns the same optimizer instance passed to the method.</p>
+<h4 id="4-optional-configure-collections-saveconfig-and-reductionconfig">4. (Optional) Configure Collections, SaveConfig and ReductionConfig</h4>
+<p>See the <a href="../api/">Common API</a> page for details on how to do this.</p>
+<hr />
+<h2 id="examples">Examples</h2>
+<p>We have three Hooks for different interfaces of TensorFlow. The following is needed to enable SageMaker Debugger on non Zero Script Change supported containers. Refer <a href="../sagemaker/">SageMaker training</a> on how to use the Zero Script Change experience.</p>
+<h2 id="tfkeras">tf.keras</h2>
+<h3 id="example">Example</h3>
+<pre><code class="python">import smdebug.tensorflow as smd
+hook = smd.KerasHook(out_dir=args.out_dir)
+
+model = tf.keras.models.Sequential([ ... ])
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+)
+# Add the hook as a callback
+model.fit(x_train, y_train, epochs=args.epochs, callbacks=[hook])
+model.evaluate(x_test, y_test, callbacks=[hook])
+</code></pre>
+
+<h3 id="tf-2x-gradienttape-example">TF 2.x GradientTape example</h3>
+<pre><code class="python">import smdebug.tensorflow as smd
+hook = smd.KerasHook(out_dir=args.out_dir)
+
+model = tf.keras.models.Sequential([ ... ])
+    for epoch in range(n_epochs):
+        for data, labels in dataset:
+            dataset_labels = labels
+            # wrap the tape to capture tensors
+            with hook.wrap_tape(tf.GradientTape(persistent=True)) as tape:
+                logits = model(data, training=True)  # (32,10)
+                loss_value = cce(labels, logits)
+            grads = tape.gradient(loss_value, model.variables)
+            opt.apply_gradients(zip(grads, model.variables))
+            acc = train_acc_metric(dataset_labels, logits)
+            # manually save metric values
+            hook.record_tensor_value(tensor_name=&quot;accuracy&quot;, tensor_value=acc)
+</code></pre>
+
+<hr />
+<h2 id="monitoredsession">MonitoredSession</h2>
+<h3 id="example_1">Example</h3>
+<pre><code class="python">import smdebug.tensorflow as smd
+hook = smd.SessionHook(out_dir=args.out_dir)
+
+loss = tf.reduce_mean(tf.matmul(...), name=&quot;loss&quot;)
+optimizer = tf.train.AdamOptimizer(args.lr)
+
+# Wrap the optimizer
+optimizer = hook.wrap_optimizer(optimizer)
+
+# Add the hook as a callback
+sess = tf.train.MonitoredSession(hooks=[hook])
+
+sess.run([loss, ...])
+</code></pre>
+
+<hr />
+<h2 id="estimator">Estimator</h2>
+<h3 id="example_2">Example</h3>
+<pre><code class="python">import smdebug.tensorflow as smd
+hook = smd.EstimatorHook(out_dir=args.out_dir)
+
+train_input_fn, eval_input_fn = ...
+estimator = tf.estimator.Estimator(...)
+
+# Set the mode and pass the hook as callback
+hook.set_mode(mode=smd.modes.TRAIN)
+estimator.train(input_fn=train_input_fn, steps=args.steps, hooks=[hook])
+
+hook.set_mode(mode=smd.modes.EVAL)
+estimator.evaluate(input_fn=eval_input_fn, steps=args.steps, hooks=[hook])
+</code></pre>
+
+<hr />
+<h2 id="full-api">Full API</h2>
+<p>See the <a href="../api/">API for saving tensors</a> page for details about the Hooks, Collection, SaveConfig, and ReductionConfig.
+See the <a href="../analysis/">Analysis</a> page for details about analyzing a training job.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
