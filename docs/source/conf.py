@@ -51,7 +51,6 @@ exclude_patterns = []
 import sphinx_rtd_theme
 
 extensions = [
-    "recommonmark",
     "sphinx_rtd_theme"
 ]
 
