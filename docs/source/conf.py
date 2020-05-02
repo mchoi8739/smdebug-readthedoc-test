@@ -66,3 +66,9 @@ html_static_path = ['_static']
 
 
 master_doc = 'index'
+
+source_parsers = {
+   '.md': 'recommonmark.parser.CommonMarkParser',
+}
+
+source_suffix = ['.rst', '.md']
