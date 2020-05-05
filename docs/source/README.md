@@ -1,4 +1,4 @@
-## Amazon SageMaker Debugger
+# Amazon SageMaker Debugger
 
 ## Table of Contents
 
