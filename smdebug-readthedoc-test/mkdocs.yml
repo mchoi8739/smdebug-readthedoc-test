@@ -1,4 +1,0 @@
-site_name: SageMaker Debugger ReadtheDoc Test
-pages:
-        - Home: README.md
-theme: readthedocs
