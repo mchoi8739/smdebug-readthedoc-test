@@ -1,7 +1,7 @@
 Hook
 -----
 
-.. autoclass:: smdebug.core.hook
+.. autoclass:: smdebug.tensorflow.keras.KerasHook
     :members:
     :undoc-members:
     :show-inheritance:

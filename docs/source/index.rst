@@ -31,6 +31,17 @@ The SageMaker smdebug Python SDK APIs:
         api/index
 
 
+**********
+Frameworks
+**********
+
+The SageMaker Python SDK supports managed training and inference for a variety of machine learning frameworks:
+
+.. toctree::
+    :maxdepth: 2
+
+    frameworks/index
+
 
 
 Indices and tables
