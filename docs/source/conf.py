@@ -52,7 +52,7 @@ import sphinx_rtd_theme
 
 extensions = [
     "sphinx_rtd_theme",
-    "recommonmark"
+    "recommonmark",
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
@@ -73,7 +73,7 @@ autoclass_content = "both"
 autodoc_default_flags = ["show-inheritance", "members", "undoc-members"]
 autodoc_member_order = "bysource"
 
-html_theme = "sphinx_rtd_theme"
+html_theme = "nature"
 html_theme_options = {
     'logo_only': True,
     'navigation_depth': 5,
