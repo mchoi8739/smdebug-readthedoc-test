@@ -9,9 +9,16 @@ Welcome to smdebug-readthedoc-test's documentation!
 
 .. toctree::
     :maxdepth:2
-   
-    ../../README.md
 
+    ../../README.md
+    analysis
+    api
+    distributed_training
+    env_var
+    mxnet
+    pytorch
+    tensorflow
+    xgboost
 
 Markdown test
 -------------
