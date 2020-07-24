@@ -74,6 +74,10 @@ autodoc_default_flags = ["show-inheritance", "members", "undoc-members"]
 autodoc_member_order = "bysource"
 
 html_theme = "nature"
+html_theme_options = {
+    'logo_only': True,
+    'navigation_depth': 5,
+}
 
 #html_theme = 'alabaster'
 
