@@ -11,6 +11,7 @@ Welcome to smdebug-readthedoc-test's documentation!
     :maxdepth:2
 
     ../../README.md
+    ../../smdebug/core/collection.py
     analysis
     api
     distributed_training
