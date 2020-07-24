@@ -55,7 +55,7 @@ extensions = [
     "recommonmark"
 ]
 
-html_theme = "sphinx_rtd_theme"
+html_theme = "classic"
 
 #html_theme = 'alabaster'
 
@@ -89,4 +89,3 @@ def setup(app):
             'auto_toc_tree_section': 'Contents',
             }, True)
     app.add_transform(AutoStructify)
-
