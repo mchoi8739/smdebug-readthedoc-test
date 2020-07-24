@@ -6,37 +6,22 @@
 Welcome to smdebug-readthedoc-test's documentation!
 ===================================================
 
+###########################
+Amazon SageMaker smdebug Python SDK
+###########################
+
+Amazon SageMaker smdebug Python SDK is an open source library for training and debugging
+machine-learned models on Amazon SageMaker.
+
+********
+Overview
+********
 
 .. toctree::
     :maxdepth:2
 
     ../../README.md
-    ../../smdebug/core/collection.py
-    analysis
-    api
-    distributed_training
-    env_var
-    mxnet
-    pytorch
-    tensorflow
-    xgboost
 
-Markdown test
--------------
-
-
-.. toctree::
-    :maxdepth:1
-
- sagemaker
-    analysis
-    api
-    distributed_training
-    env_var
-    mxnet
-    pytorch
-    tensorflow
-    xgboost
 
 
 
