@@ -73,7 +73,7 @@ autoclass_content = "both"
 autodoc_default_flags = ["show-inheritance", "members", "undoc-members"]
 autodoc_member_order = "bysource"
 
-html_theme = "nature"
+html_theme = "sphinx_rtd_theme"
 html_theme_options = {
     'logo_only': True,
     'navigation_depth': 5,
