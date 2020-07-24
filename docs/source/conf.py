@@ -55,7 +55,7 @@ extensions = [
     "recommonmark"
 ]
 
-html_theme = "classic"
+html_theme = "nature"
 
 #html_theme = 'alabaster'
 
