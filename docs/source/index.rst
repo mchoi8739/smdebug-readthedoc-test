@@ -23,6 +23,13 @@ Overview
     ../../README.md
 
 
+The SageMaker smdebug Python SDK APIs:
+
+    .. toctree::
+        :maxdepth: 2
+
+        api/index
+
 
 
 
