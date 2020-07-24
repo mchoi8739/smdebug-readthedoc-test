@@ -3,7 +3,7 @@ Hook APIs
 ##############
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :glob:
 
-   hook
+   smdebug.tensorflow
