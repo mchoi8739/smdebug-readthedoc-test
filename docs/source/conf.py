@@ -53,6 +53,14 @@ import sphinx_rtd_theme
 extensions = [
     "sphinx_rtd_theme",
     "recommonmark"
+    "sphinx.ext.autodoc",
+    "sphinx.ext.doctest",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.todo",
+    "sphinx.ext.coverage",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.autosectionlabel",
 ]
 
 html_theme = "nature"
