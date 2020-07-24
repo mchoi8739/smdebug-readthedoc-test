@@ -6,4 +6,4 @@ Hook APIs
    :maxdepth: 1
    :glob:
 
-   *
+   hook
