@@ -52,6 +52,7 @@ def build_package(version):
         description=DOCLINES[0],
         packages=find_packages("smdebug"),
         package_dir={"": "smdebug"},
+        py_modules=[os.path.splitext(os.path.basename(path))[0] for path in glob("src/*.py")],
         url="https://github.com/awslabs/sagemaker-debugger",
         packages=packages,
         classifiers=[
